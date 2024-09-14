@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainUIHandler : MonoBehaviour
@@ -15,11 +16,5 @@ public class MainUIHandler : MonoBehaviour
         MainManager.instance.ScoreText = ScoreText.GetComponent<Text>();
         MainManager.instance.HighScoreText = HighScoreText.GetComponent<Text>();
         MainManager.instance.GameOverText = GameOverText;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

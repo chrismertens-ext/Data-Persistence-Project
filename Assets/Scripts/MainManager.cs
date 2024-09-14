@@ -14,8 +14,6 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
-    public int playerScore;
-
     public Text ScoreText;
     public Text HighScoreText;
     public string playerName;
@@ -26,6 +24,7 @@ public class MainManager : MonoBehaviour
     public int m_highScore = 0;
     
     private bool m_GameOver = false;
+    public bool newPlayer;
 
     
     // Start is called before the first frame update
@@ -47,8 +46,14 @@ public class MainManager : MonoBehaviour
     {
         yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "main");
 
+        m_Started = false;
         BrickInit();
         LoadScore();
+    }
+
+    public void RestartGame()
+    {
+        StartCoroutine(StartGame());
     }
 
     private void Update()
@@ -71,9 +76,15 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                m_Started = false;
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 StartCoroutine(StartGame());
+            }
+            else if (Input.GetKeyDown(KeyCode.Return))
+            {
+                newPlayer = true;
+                m_Started = false;
+                m_highScore = 0;
+                SceneManager.LoadScene(0);
             }
         }
     }
@@ -91,14 +102,14 @@ public class MainManager : MonoBehaviour
         if (m_Points > m_highScore)
         {
             m_highScore = m_Points;
-            GameOverText.GetComponent<Text>().text = "New High Score!\nPress Space to Restart";
+            GameOverText.GetComponent<Text>().text = "New High Score!\nPress Space to Restart\nPress Enter to Return to Menu";
             SaveScore();
         }
 
         GameOverText.SetActive(true);
     }
 
-    private void BrickInit()
+    public void BrickInit()
     {
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
@@ -136,6 +147,7 @@ public class MainManager : MonoBehaviour
     {
         m_Points = 0;
         string path = Application.persistentDataPath + $"/{playerName}savefile.json";
+
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
@@ -147,7 +159,8 @@ public class MainManager : MonoBehaviour
 
         else
         {
-            HighScoreText.text = $"High Score : 0";
+            m_highScore = 0;
+            HighScoreText.text = $"High Score : {m_highScore}";
         }
     }
 }
